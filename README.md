@@ -14,3 +14,7 @@ $ ./run.sh
 
 For now, the `run.sh` doesn't cleanup the resources. So, if you want to cleanup them,
 you need to run `14-cleanup.sh` manually.
+
+# Credits
+
+Thanks to [masayukig](https://github.com/masayukig) for the [initial work](https://github.com/masayukig/k8s-the-hard-way-script).
