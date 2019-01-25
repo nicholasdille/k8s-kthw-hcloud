@@ -138,10 +138,10 @@ ls admin.kubeconfig
 echo "============== Distribute the Kubernetes Configuration Files"
 echo "============== Copy the appropriate kubelet and kube-proxy kubeconfig files to each worker instance:"
 for instance in worker-0 worker-1 worker-2; do
-  scp ${instance}.kubeconfig kube-proxy.kubeconfig root@$(hcloud server list --selector name=${instance} --output columns=ipv4 | tail -n +2):~/
+  scp ${instance}.kubeconfig kube-proxy.kubeconfig root@${instance}:~/
 done
 
 echo "============== Copy the appropriate kube-controller-manager and kube-scheduler kubeconfig files to each controller instance:"
 for instance in controller-0 controller-1 controller-2; do
-  scp admin.kubeconfig kube-controller-manager.kubeconfig kube-scheduler.kubeconfig root@$(hcloud server list --selector name=${instance} --output columns=ipv4 | tail -n +2):~/
+  scp admin.kubeconfig kube-controller-manager.kubeconfig kube-scheduler.kubeconfig root@${instance}:~/
 done

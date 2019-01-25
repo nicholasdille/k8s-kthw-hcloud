@@ -16,7 +16,8 @@ for i in 0 1 2; do
     --location nbg1 \
     --image ubuntu-18.04 \
     --type cx21 \
-    --ssh-key 209622
+    --ssh-key 209622 \
+    --ssh-key 396554
   hcloud server add-label controller-${i} name=controller-${i}
 done
 
@@ -28,7 +29,8 @@ for i in 0 1 2; do
     --location nbg1 \
     --image ubuntu-18.04 \
     --type cx21 \
-    --ssh-key 209622
+    --ssh-key 209622 \
+    --ssh-key 396554
   hcloud server add-label worker-${i} name=worker-${i}
 done
 

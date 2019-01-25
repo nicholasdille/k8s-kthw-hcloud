@@ -292,11 +292,11 @@ ls service-account-key.pem service-account.pem
 echo "============== Distribute the Client and Server Certificates"
 echo "============== Copy the appropriate certificates and private keys to each worker instance:"
 for instance in worker-0 worker-1 worker-2; do
-  scp ca.pem ${instance}-key.pem ${instance}.pem root@$(hcloud server list --selector name=${instance} --output columns=ipv4 | tail -n +2):~/
+  scp ca.pem ${instance}-key.pem ${instance}.pem root@${instance}:~/
 done
 
 echo "============== Copy the appropriate certificates and private keys to each controller instance:"
 for instance in controller-0 controller-1 controller-2; do
   scp ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
-    service-account-key.pem service-account.pem root@$(hcloud server list --selector name=${instance} --output columns=ipv4 | tail -n +2):~/
+    service-account-key.pem service-account.pem root@${instance}:~/
 done

@@ -30,5 +30,5 @@ EOF
 
 echo "============== Copy the encryption-config.yaml encryption config file to each controller instance:"
 for instance in controller-0 controller-1 controller-2; do
-  scp encryption-config.yaml root@$(hcloud server list --selector name=controller-0 --output columns=ipv4 | tail -n +2):~/
+  scp encryption-config.yaml root@${instance}:~/
 done

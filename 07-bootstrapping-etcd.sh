@@ -91,5 +91,5 @@ INITIAL_CLUSTER=$(for instance in controller-0 controller-1 controller-2; do
     echo ${instance}=https://$(hcloud server list --selector name=${instance} --output columns=ipv4 | tail -n +2):2380
 done | xargs echo | tr ' ' ',')
 for instance in controller-0 controller-1 controller-2; do
-  ssh root@$(hcloud server list --selector name=${instance} --output columns=ipv4 | tail -n +2) -- "INITIAL_CLUSTER=${INITIAL_CLUSTER} bash -s" < bootstrapping_an_etcd_cluster.sh
+  ssh root@${instance} -- "INITIAL_CLUSTER=${INITIAL_CLUSTER} bash -s" < bootstrapping_an_etcd_cluster.sh
 done
