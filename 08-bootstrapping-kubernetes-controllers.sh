@@ -32,7 +32,7 @@ echo "============== Configure the Kubernetes API Server"
 {
   sudo mkdir -p /var/lib/kubernetes/
 
-  sudo mv ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
+  sudo cp ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
     service-account-key.pem service-account.pem \
     encryption-config.yaml /var/lib/kubernetes/
 }
@@ -99,6 +99,7 @@ Documentation=https://github.com/kubernetes/kubernetes
 ExecStart=/usr/local/bin/kube-controller-manager \\
   --address=0.0.0.0 \\
   --cluster-cidr=10.200.0.0/16 \\
+  --allocate-node-cidrs=true \\
   --cluster-name=kubernetes \\
   --cluster-signing-cert-file=/var/lib/kubernetes/ca.pem \\
   --cluster-signing-key-file=/var/lib/kubernetes/ca-key.pem \\
@@ -216,7 +217,7 @@ ETCD_SERVERS=$(for instance in controller-0 controller-1 controller-2; do
     echo https://$(hcloud server list --selector name=${instance} --output columns=ipv4 | tail -n +2):2379
 done | xargs echo | tr ' ' ',')
 for instance in controller-0 controller-1 controller-2; do
-  ssh root@$(hcloud server list --selector name=${instance} --output columns=ipv4 | tail -n +2) -- "ETCD_SERVERS=${ETCD_SERVERS} bash -s" < bootstrapping-kubernetes-control-plane.sh
+  ssh root@${instance} -- "ETCD_SERVERS=${ETCD_SERVERS} bash -s" < bootstrapping-kubernetes-control-plane.sh
 done
 
 
@@ -264,7 +265,7 @@ subjects:
 EOF
 ' > create-clusterrole.sh
 
-ssh root@$(hcloud server list --selector name=controller-0 --output columns=ipv4 | tail -n +2) -- 'bash -s' < create-clusterrole.sh
+ssh root@controller-0 -- 'bash -s' < create-clusterrole.sh
 
 echo "============== Verification"
 echo "============== Retrieve the kubernetes-the-hard-way static IP address:"
