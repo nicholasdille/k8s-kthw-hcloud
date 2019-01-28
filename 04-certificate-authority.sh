@@ -224,7 +224,7 @@ echo "============== The Kubernetes API Server Certificate"
 echo "============== Generate the Kubernetes API Server certificate and private key:"
 {
 
-KUBERNETES_PUBLIC_ADDRESS=k8s.dille.io
+KUBERNETES_PUBLIC_ADDRESS=$(hcloud server list --selector name=controller-0 --output columns=ipv4 | tail -n +2)
 
 cat > kubernetes-csr.json <<EOF
 {

@@ -26,13 +26,13 @@ echo "============== Download and Install Worker Binaries"
 mkdir /etc/docker
 cat <<EOF | sudo tee /etc/docker/daemon.json
 {
-    "bridge": "cbr0",
+    "bridge": "cnio0",
     "iptables": false,
     "ip-masq": false
 }
 EOF
-ip link add cbr0 type bridge
-ip link set cbr0 up
+ip link add cnio0 type bridge
+ip link set cnio0 up
 
 sudo apt-get -y install \
     apt-transport-https \
@@ -75,6 +75,31 @@ echo "============== Install the worker binaries:"
 }
 
 echo "============== Configure CNI Networking"
+echo "============== Create the bridge network configuration file:"
+cat <<EOF | sudo tee /etc/cni/net.d/10-bridge.conf
+{
+    "cniVersion": "0.3.1",
+    "name": "bridge",
+    "type": "bridge",
+    "bridge": "cnio0",
+    "isGateway": true,
+    "ipMasq": true,
+    "ipam": {
+        "type": "host-local",
+        "ranges": [
+          [{"subnet": "${POD_CIDR}"}]
+        ],
+        "routes": [{"dst": "0.0.0.0/0"}]
+    }
+}
+EOF
+echo "============== Create the loopback network configuration file:"
+cat <<EOF | sudo tee /etc/cni/net.d/99-loopback.conf
+{
+    "cniVersion": "0.3.1",
+    "type": "loopback"
+}
+EOF
 
 echo "============== Configure the Kubelet"
 {
@@ -119,8 +144,7 @@ ExecStart=/usr/local/bin/kubelet \\
   --config=/var/lib/kubelet/kubelet-config.yaml \\
   --image-pull-progress-deadline=2m \\
   --kubeconfig=/var/lib/kubelet/kubeconfig \\
-  --network-plugin=kubenet \\
-  --non-masquerade-cidr=${POD_CIDR} \\
+  --network-plugin=cni \\
   --register-node=true \\
   --v=2
 Restart=on-failure
@@ -179,8 +203,7 @@ echo "============== The compute instances created in this tutorial will not hav
 echo "Run the following commands from the same machine used to create the compute instances."
 
 echo "============== List the registered Kubernetes nodes:"
-  ssh root@controller-0 \
-  --command "kubectl get nodes --kubeconfig admin.kubeconfig"
+  ssh controller-0 kubectl get nodes --kubeconfig admin.kubeconfig
 
 echo "============== The output should be like this"
 cat << EOF

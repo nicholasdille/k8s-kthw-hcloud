@@ -12,7 +12,7 @@ echo "============== In this lab you will generate a kubeconfig file for the kub
 echo "============== The Admin Kubernetes Configuration File"
 echo "============== Generate a kubeconfig file suitable for authenticating as the admin user:"
 {
-  KUBERNETES_PUBLIC_ADDRESS=k8s.dille.io
+  KUBERNETES_PUBLIC_ADDRESS=$(hcloud server list --selector name=controller-0 --output columns=ipv4 | tail -n +2)
 
   kubectl config set-cluster kubernetes-the-hard-way \
     --certificate-authority=ca.pem \

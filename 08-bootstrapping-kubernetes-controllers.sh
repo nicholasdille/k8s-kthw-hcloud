@@ -98,7 +98,6 @@ Documentation=https://github.com/kubernetes/kubernetes
 [Service]
 ExecStart=/usr/local/bin/kube-controller-manager \\
   --address=0.0.0.0 \\
-  --cluster-cidr=10.200.0.0/16 \\
   --allocate-node-cidrs=true \\
   --cluster-name=kubernetes \\
   --cluster-signing-cert-file=/var/lib/kubernetes/ca.pem \\
@@ -269,7 +268,7 @@ ssh root@controller-0 -- 'bash -s' < create-clusterrole.sh
 
 echo "============== Verification"
 echo "============== Retrieve the kubernetes-the-hard-way static IP address:"
-KUBERNETES_PUBLIC_ADDRESS=k8s.dille.io
+KUBERNETES_PUBLIC_ADDRESS=$(hcloud server list --selector name=controller-0 --output columns=ipv4 | tail -n +2)
 
 echo "============== Make a HTTP request for the Kubernetes version info:"
 curl --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}:6443/version

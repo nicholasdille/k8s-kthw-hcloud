@@ -42,9 +42,6 @@ echo; echo; echo
 bash ${SCRIPT_DIR}/10-configuring-kubectl.sh
 
 echo; echo; echo
-bash ${SCRIPT_DIR}/11-pod-network-routes.sh
-
-echo; echo; echo
 bash ${SCRIPT_DIR}/12-dns-addon.sh
 
 echo; echo; echo

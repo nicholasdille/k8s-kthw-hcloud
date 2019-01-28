@@ -12,7 +12,7 @@ echo "============== Client Authentication Configs"
 echo "============== Kubernetes Public IP Address"
 echo "============== Retrieve the kubernetes-the-hard-way static IP address:"
 
-KUBERNETES_PUBLIC_ADDRESS=k8s.dille.io
+KUBERNETES_PUBLIC_ADDRESS=$(hcloud server list --selector name=controller-0 --output columns=ipv4 | tail -n +2)
 
 echo "============== The kubelet Kubernetes Configuration File"
 echo "============== Generate a kubeconfig file for each worker node:"
